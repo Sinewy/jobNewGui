@@ -1,0 +1,213 @@
+# Created by .gitignore support plugin (hsz.mobi)
+### JetBrains template
+# Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm
+
+*.iml
+
+## Directory-based project format:
+.idea/
+# if you remove the above rule, at least ignore the following:
+
+# User-specific stuff:
+# .idea/workspace.xml
+# .idea/tasks.xml
+# .idea/dictionaries
+
+# Sensitive or high-churn files:
+# .idea/dataSources.ids
+# .idea/dataSources.xml
+# .idea/sqlDataSources.xml
+# .idea/dynamic.xml
+# .idea/uiDesigner.xml
+
+# Gradle:
+# .idea/gradle.xml
+# .idea/libraries
+
+# Mongo Explorer plugin:
+# .idea/mongoSettings.xml
+
+## File-based project format:
+*.ipr
+*.iws
+
+## Plugin-specific files:
+
+# IntelliJ
+out/
+
+# mpeltonen/sbt-idea plugin
+.idea_modules/
+
+# JIRA plugin
+atlassian-ide-plugin.xml
+
+# Crashlytics plugin (for Android Studio and IntelliJ)
+com_crashlytics_export_strings.xml
+crashlytics.properties
+crashlytics-build.properties
+
+
+
+.idea
+jobNewGui.iml
+includes/libraries/tcpdf/examples
+includes/libraries/tcpdf/fonts/freeserifb.z
+includes/libraries/tcpdf/fonts/dejavusansmonobi.php
+includes/libraries/tcpdf/fonts/freefont-20120503
+includes/libraries/tcpdf/fonts/freemonob.ctg.z
+includes/libraries/tcpdf/fonts/dejavuserifbi.z
+includes/libraries/tcpdf/fonts/aealarabiya.ctg.z
+includes/libraries/tcpdf/fonts/dejavuserifbi.ctg.z
+includes/libraries/tcpdf/fonts/dejavusans.ctg.z
+includes/libraries/tcpdf/fonts/dejavuserifcondensed.ctg.z
+includes/libraries/tcpdf/fonts/dejavusansb.php
+includes/libraries/tcpdf/fonts/freeserif.php
+includes/libraries/tcpdf/fonts/freesansi.ctg.z
+includes/libraries/tcpdf/fonts/dejavusansi.z
+includes/libraries/tcpdf/fonts/dejavusansmonobi.ctg.z
+includes/libraries/tcpdf/fonts/dejavuserif.php
+includes/libraries/tcpdf/fonts/courier.php
+includes/libraries/tcpdf/fonts/dejavuserifcondensedbi.ctg.z
+includes/libraries/tcpdf/fonts/dejavusanscondensedi.ctg.z
+includes/libraries/tcpdf/fonts/dejavusansmonoi.php
+includes/libraries/tcpdf/fonts/dejavusansb.ctg.z
+includes/libraries/tcpdf/fonts/dejavusansmono.z
+includes/libraries/tcpdf/fonts/dejavuserifcondensedb.z
+includes/libraries/tcpdf/fonts/courierb.php
+includes/libraries/tcpdf/fonts/freemonoi.z
+includes/libraries/tcpdf/fonts/dejavusanscondensed.z
+includes/libraries/tcpdf/fonts/dejavuserifb.ctg.z
+includes/libraries/tcpdf/fonts/freesansb.php
+includes/libraries/tcpdf/fonts/freesans.z
+includes/libraries/tcpdf/fonts/freemonoi.php
+includes/libraries/tcpdf/fonts/dejavuserifcondensedbi.php
+includes/libraries/tcpdf/fonts/dejavuserifcondensedb.php
+includes/libraries/tcpdf/fonts/dejavu-fonts-ttf-2.34
+includes/libraries/tcpdf/fonts/dejavusansbi.ctg.z
+includes/libraries/tcpdf/fonts/aealarabiya.php
+includes/libraries/tcpdf/fonts/freesansi.php
+includes/libraries/tcpdf/fonts/dejavuserifbi.php
+includes/libraries/tcpdf/fonts/dejavuserifcondensedi.php
+includes/libraries/tcpdf/fonts/dejavusansi.php
+includes/libraries/tcpdf/fonts/dejavusansmono.php
+includes/libraries/tcpdf/fonts/courieri.php
+includes/libraries/tcpdf/fonts/freeserif.ctg.z
+includes/libraries/tcpdf/fonts/freeserifbi.ctg.z
+includes/libraries/tcpdf/fonts/dejavusansextralight.z
+includes/libraries/tcpdf/fonts/freeserifi.ctg.z
+includes/libraries/tcpdf/fonts/dejavusanscondensedbi.z
+includes/libraries/tcpdf/fonts/freesansi.z
+includes/libraries/tcpdf/fonts/freemonob.php
+includes/libraries/tcpdf/fonts/dejavusansmonobi.z
+includes/libraries/tcpdf/fonts/freeserifb.ctg.z
+includes/libraries/tcpdf/fonts/courierbi.php
+includes/libraries/tcpdf/fonts/freeserifbi.z
+includes/libraries/tcpdf/fonts/dejavusansi.ctg.z
+includes/libraries/tcpdf/fonts/cid0kr.php
+includes/libraries/tcpdf/fonts/dejavusansmonob.php
+includes/libraries/tcpdf/fonts/dejavusansmono.ctg.z
+includes/libraries/tcpdf/fonts/dejavusanscondensed.php
+includes/libraries/tcpdf/fonts/freemonobi.z
+includes/libraries/tcpdf/fonts/freeserifbi.php
+includes/libraries/tcpdf/fonts/dejavusansextralight.ctg.z
+includes/libraries/tcpdf/fonts/dejavuserifb.z
+includes/libraries/tcpdf/fonts/freemonob.z
+includes/libraries/tcpdf/fonts/dejavuserifcondensed.z
+includes/libraries/tcpdf/fonts/freemonoi.ctg.z
+includes/libraries/tcpdf/fonts/freesans.ctg.z
+includes/libraries/tcpdf/fonts/cid0cs.php
+includes/libraries/tcpdf/fonts/dejavuserifi.z
+includes/libraries/tcpdf/fonts/freemono.php
+includes/libraries/tcpdf/fonts/dejavusansextralight.php
+includes/libraries/tcpdf/fonts/dejavusans.php
+includes/libraries/tcpdf/fonts/dejavusanscondensedi.z
+includes/libraries/tcpdf/fonts/freesansb.ctg.z
+includes/libraries/tcpdf/fonts/freeserifb.php
+includes/libraries/tcpdf/fonts/aealarabiya.z
+includes/libraries/tcpdf/fonts/dejavusanscondensedbi.php
+includes/libraries/tcpdf/fonts/cid0jp.php
+includes/libraries/tcpdf/fonts/dejavusansmonob.z
+includes/libraries/tcpdf/fonts/freemonobi.php
+includes/libraries/tcpdf/fonts/dejavusanscondensed.ctg.z
+includes/libraries/tcpdf/fonts/dejavusans.z
+includes/libraries/tcpdf/fonts/ae_fonts_2.0
+includes/libraries/tcpdf/fonts/freemono.ctg.z
+includes/libraries/tcpdf/fonts/freesansbi.ctg.z
+includes/libraries/tcpdf/fonts/freesansb.z
+includes/libraries/tcpdf/fonts/dejavusanscondensedi.php
+includes/libraries/tcpdf/fonts/freemonobi.ctg.z
+includes/libraries/tcpdf/fonts/aefurat.z
+includes/libraries/tcpdf/fonts/dejavusanscondensedb.ctg.z
+includes/libraries/tcpdf/fonts/dejavusanscondensedbi.ctg.z
+includes/libraries/tcpdf/fonts/dejavuserifi.ctg.z
+includes/libraries/tcpdf/fonts/aefurat.php
+includes/libraries/tcpdf/fonts/dejavusanscondensedb.z
+includes/libraries/tcpdf/fonts/dejavuserifi.php
+includes/libraries/tcpdf/fonts/dejavuserifcondensedbi.z
+includes/libraries/tcpdf/fonts/dejavuserifcondensedb.ctg.z
+includes/libraries/tcpdf/fonts/dejavusanscondensedb.php
+includes/libraries/tcpdf/fonts/dejavuserifcondensedi.ctg.z
+includes/libraries/tcpdf/fonts/freesansbi.z
+includes/libraries/tcpdf/fonts/freesans.php
+includes/libraries/tcpdf/fonts/freemono.z
+includes/libraries/tcpdf/fonts/freeserif.z
+includes/libraries/tcpdf/fonts/dejavusansmonoi.z
+includes/libraries/tcpdf/fonts/dejavuserif.ctg.z
+includes/libraries/tcpdf/fonts/dejavuserifcondensed.php
+includes/libraries/tcpdf/fonts/freeserifi.z
+includes/libraries/tcpdf/fonts/freesansbi.php
+includes/libraries/tcpdf/fonts/dejavusansb.z
+includes/libraries/tcpdf/fonts/dejavuserifcondensedi.z
+includes/libraries/tcpdf/fonts/dejavusansbi.php
+includes/libraries/tcpdf/fonts/dejavusansbi.z
+includes/libraries/tcpdf/fonts/dejavusansmonoi.ctg.z
+includes/libraries/tcpdf/fonts/dejavuserifb.php
+includes/libraries/tcpdf/fonts/freeserifi.php
+includes/libraries/tcpdf/fonts/dejavusansmonob.ctg.z
+includes/libraries/tcpdf/fonts/dejavuserif.z
+includes/libraries/tcpdf/fonts/cid0ct.php
+includes/libraries/tcpdf/fonts/aefurat.ctg.z
+includes/libraries/tcpdf/fonts/pdfahelveticai.z
+includes/libraries/tcpdf/fonts/pdfatimesbi.php
+includes/libraries/tcpdf/fonts/pdfahelvetica.z
+includes/libraries/tcpdf/fonts/pdfatimes.z
+includes/libraries/tcpdf/fonts/pdfatimesb.php
+includes/libraries/tcpdf/fonts/pdfasymbol.php
+includes/libraries/tcpdf/fonts/pdfacourier.z
+includes/libraries/tcpdf/fonts/pdfahelveticai.php
+includes/libraries/tcpdf/fonts/pdfazapfdingbats.php
+includes/libraries/tcpdf/fonts/timesi.php
+includes/libraries/tcpdf/fonts/pdfahelveticab.php
+includes/libraries/tcpdf/fonts/pdfacourierbi.php
+includes/libraries/tcpdf/fonts/pdfazapfdingbats.z
+includes/libraries/tcpdf/fonts/pdfatimesb.z
+includes/libraries/tcpdf/fonts/pdfatimes.php
+includes/libraries/tcpdf/fonts/pdfatimesi.z
+includes/libraries/tcpdf/fonts/pdfahelveticabi.z
+includes/libraries/tcpdf/fonts/pdfatimesi.php
+includes/libraries/tcpdf/fonts/pdfacourierbi.z
+includes/libraries/tcpdf/fonts/symbol.php
+includes/libraries/tcpdf/fonts/uni2cid_ak12.php
+includes/libraries/tcpdf/fonts/kozminproregular.php
+includes/libraries/tcpdf/fonts/uni2cid_ac15.php
+includes/libraries/tcpdf/fonts/pdfacourierb.php
+includes/libraries/tcpdf/fonts/stsongstdlight.php
+includes/libraries/tcpdf/fonts/pdfasymbol.z
+includes/libraries/tcpdf/fonts/hysmyeongjostdmedium.php
+includes/libraries/tcpdf/fonts/timesbi.php
+includes/libraries/tcpdf/fonts/uni2cid_aj16.php
+includes/libraries/tcpdf/fonts/pdfahelveticabi.php
+includes/libraries/tcpdf/fonts/uni2cid_ag15.php
+includes/libraries/tcpdf/fonts/msungstdlight.php
+includes/libraries/tcpdf/fonts/pdfacourierb.z
+includes/libraries/tcpdf/fonts/pdfahelvetica.php
+includes/libraries/tcpdf/fonts/kozgopromedium.php
+includes/libraries/tcpdf/fonts/times.php
+includes/libraries/tcpdf/fonts/zapfdingbats.php
+includes/libraries/tcpdf/fonts/pdfacourier.php
+includes/libraries/tcpdf/fonts/timesb.php
+includes/libraries/tcpdf/fonts/pdfacourieri.php
+includes/libraries/tcpdf/fonts/pdfatimesbi.z
+includes/libraries/tcpdf/fonts/pdfahelveticab.z
+includes/libraries/tcpdf/fonts/pdfacourieri.z
