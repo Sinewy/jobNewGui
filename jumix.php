@@ -130,11 +130,11 @@
                     <div class='left compAmount'><p>0.34 ml</p></div>
                     <div class='left compPrice'><p>€12.45</p></div>
                 </div>
-                <div class='row'>
-                    <div class='left compColor'><div class='colorantColor'>&nbsp;</div></div>
-                    <div class='left compName'><p>Colorant Name 234SDF</p></div>
-                    <div class='left compAmount'><p>0.34 ml</p></div>
-                    <div class='left compPrice'><p>€12.45</p></div>
+<!--                <div class='row'>-->
+<!--                    <div class='left compColor'><div class='colorantColor'>&nbsp;</div></div>-->
+<!--                    <div class='left compName'><p>Colorant Name 234SDF</p></div>-->
+<!--                    <div class='left compAmount'><p>0.34 ml</p></div>-->
+<!--                    <div class='left compPrice'><p>€12.45</p></div>-->
                 </div>
                 <div class='row'>
                     <div class='left compColor'><div class='colorantColor'>&nbsp;</div></div>

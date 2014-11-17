@@ -47,8 +47,6 @@ com_crashlytics_export_strings.xml
 crashlytics.properties
 crashlytics-build.properties
 
-
-
 .idea
 jobNewGui.iml
 includes/libraries/tcpdf/examples
@@ -211,3 +209,4 @@ includes/libraries/tcpdf/fonts/pdfacourieri.php
 includes/libraries/tcpdf/fonts/pdfatimesbi.z
 includes/libraries/tcpdf/fonts/pdfahelveticab.z
 includes/libraries/tcpdf/fonts/pdfacourieri.z
+jumixGuiRPiNew.iml
