@@ -5,6 +5,12 @@
  * Date: 11/17/14
  * Time: 11:57
  */
+
+// ********************** Global variables **********************\\
+//TODO - first write this to SESSION, than get it from there
+$dispenserGroupId = 1;
+$dispenserSystemId = 9;
+
 // ********************** Utility functions **********************\\
 
 function redirectTo($newLocation) {
@@ -24,9 +30,15 @@ function confirmQuery($resultSet) {
 
 function findAllProducts() {
     global $connection;
-    $query  = "SELECT * ";
-    $query .= "FROM v_products ";
-    $query .= "ORDER BY name ASC";
+    global $dispenserGroupId;
+    global $dispenserSystemId;
+    $query  = "SELECT DISTINCT p.name, p.id ";
+    $query .= "FROM formulas_has_dispenser_groups fg ";
+    $query .= "INNER JOIN formulas f ON (f.formulas_id = fg.formulas_id) ";
+    $query .= "INNER JOIN products p ON (p.id = f.products_id) ";
+    $query .= "WHERE fg.dispenser_groups_id = {$dispenserGroupId} ";
+    $query .= "AND fg.dispenser_systems_id = {$dispenserSystemId} ";
+    $query .= "ORDER BY p.name ASC";
     $result = mysqli_query($connection, $query);
     confirmQuery($result);
     return $result;
@@ -34,12 +46,17 @@ function findAllProducts() {
 
 function findAllProductsForCollection($collectionId) {
     global $connection;
-    $query  = "SELECT distinct p.name, p.id ";
-    $query .= "FROM formulas f ";
-    $query .= "INNER JOIN v_collections c ON (c.id = f.collections_id) ";
-    $query .= "INNER JOIN v_products p ON (p.id = f.products_id) ";
-    $query .= "WHERE c.id = {$collectionId} ";
-    $query .= "ORDER BY name ASC";
+    global $dispenserGroupId;
+    global $dispenserSystemId;
+    $query  = "SELECT DISTINCT p.name, p.id ";
+    $query .= "FROM formulas_has_dispenser_groups fg ";
+    $query .= "INNER JOIN formulas f ON (f.formulas_id = fg.formulas_id) ";
+    $query .= "INNER JOIN products p ON (p.id = f.products_id) ";
+    $query .= "INNER JOIN collections c ON (c.id = f.collections_id) ";
+    $query .= "WHERE fg.dispenser_groups_id = {$dispenserGroupId} ";
+    $query .= "AND fg.dispenser_systems_id = {$dispenserSystemId} ";
+    $query .= "AND c.id = {$collectionId} ";
+    $query .= "ORDER BY p.name ASC";
     $result = mysqli_query($connection, $query);
     confirmQuery($result);
     return $result;
@@ -47,9 +64,15 @@ function findAllProductsForCollection($collectionId) {
 
 function findAllCollections() {
     global $connection;
-    $query  = "SELECT * ";
-    $query .= "FROM v_collections ";
-    $query .= "ORDER BY name ASC";
+    global $dispenserGroupId;
+    global $dispenserSystemId;
+    $query  = "SELECT DISTINCT c.name, c.id ";
+    $query .= "FROM formulas_has_dispenser_groups fg ";
+    $query .= "INNER JOIN formulas f ON (f.formulas_id = fg.formulas_id) ";
+    $query .= "INNER JOIN collections c ON (c.id = f.collections_id) ";
+    $query .= "WHERE fg.dispenser_groups_id = {$dispenserGroupId} ";
+    $query .= "AND fg.dispenser_systems_id = {$dispenserSystemId} ";
+    $query .= "ORDER BY c.name ASC";
     $result = mysqli_query($connection, $query);
     confirmQuery($result);
     return $result;
@@ -57,12 +80,17 @@ function findAllCollections() {
 
 function findAllCollectionsForProduct($productId) {
     global $connection;
-    $query  = "SELECT distinct c.name, c.id ";
-    $query .= "FROM formulas f ";
-    $query .= "INNER JOIN v_collections c ON (c.id = f.collections_id) ";
-    $query .= "INNER JOIN v_products p ON (p.id = f.products_id) ";
-    $query .= "WHERE p.id = {$productId} ";
-    $query .= "ORDER BY name ASC";
+    global $dispenserGroupId;
+    global $dispenserSystemId;
+    $query  = "SELECT DISTINCT c.name, c.id ";
+    $query .= "FROM formulas_has_dispenser_groups fg ";
+    $query .= "INNER JOIN formulas f ON (f.formulas_id = fg.formulas_id) ";
+    $query .= "INNER JOIN collections c ON (c.id = f.collections_id) ";
+    $query .= "INNER JOIN products p ON (p.id = f.products_id) ";
+    $query .= "WHERE fg.dispenser_groups_id = {$dispenserGroupId} ";
+    $query .= "AND fg.dispenser_systems_id = {$dispenserSystemId} ";
+    $query .= "AND p.id = {$productId} ";
+    $query .= "ORDER BY c.name ASC";
     $result = mysqli_query($connection, $query);
     confirmQuery($result);
     return $result;
@@ -80,6 +108,118 @@ function findAllCanSizesForProduct($productId) {
     confirmQuery($result);
     return $result;
 }
+
+function findAppropriateColors($searchString, $productId, $collectionId) {
+    global $connection;
+    global $dispenserGroupId;
+    global $dispenserSystemId;
+    $query  = "SELECT DISTINCT c.name_short ";
+    $query .= "FROM formulas_has_dispenser_groups fg ";
+    $query .= "INNER JOIN formulas f ON (f.formulas_id = fg.formulas_id) ";
+    $query .= "INNER JOIN products p ON (p.id = f.products_id) ";
+    $query .= "INNER JOIN collections coll ON (coll.id = f.collections_id) ";
+    $query .= "INNER JOIN colors c ON (c.id = f.colors_id) ";
+    $query .= "WHERE fg.dispenser_groups_id = {$dispenserGroupId} ";
+    $query .= "AND fg.dispenser_systems_id = {$dispenserSystemId} ";
+    if($productId != -1) {
+        $query .= "AND p.id = {$productId} ";
+    }
+    if($collectionId != -1) {
+        $query .= "AND coll.id = {$collectionId} ";
+    }
+    $query .= "AND c.name_short LIKE '{$searchString}%' ";
+    $query .= "ORDER BY c.name_short ASC";
+    $result = mysqli_query($connection, $query);
+    confirmQuery($result);
+    return $result;
+}
+
+function findFormulaIdForColorProductCollection($colorName, $productId, $collectionId) {
+    global $connection;
+    $query  = "SELECT f.formulas_id ";
+    $query .= "FROM formulas f ";
+    $query .= "INNER JOIN products p ON (p.id = f.products_id) ";
+    $query .= "INNER JOIN collections coll ON (coll.id = f.collections_id) ";
+    $query .= "INNER JOIN colors c ON (c.id = f.colors_id) ";
+    $query .= "WHERE p.id = {$productId} ";
+    $query .= "AND coll.id = {$collectionId} ";
+    $query .= "AND c.name_short = '{$colorName}' ";
+    $query .= "LIMIT 1";
+    $result = mysqli_query($connection, $query);
+    confirmQuery($result);
+    if($id = mysqli_fetch_assoc($result)) {
+        return $id;
+    } else {
+        return null;
+    }
+}
+
+function findProductsForColorAndCollection($colorName, $collectionId) {
+    global $connection;
+    $query  = "SELECT p.name, p.id ";
+    $query .= "FROM formulas f ";
+    $query .= "INNER JOIN products p ON (p.id = f.products_id) ";
+    $query .= "INNER JOIN collections coll ON (coll.id = f.collections_id) ";
+    $query .= "INNER JOIN colors c ON (c.id = f.colors_id) ";
+    $query .= "WHERE coll.id = {$collectionId} ";
+    $query .= "AND c.name_short = '{$colorName}' ";
+    $query .= "ORDER BY p.name ASC";
+    $result = mysqli_query($connection, $query);
+    confirmQuery($result);
+    return $result;
+}
+
+function findCollectionsForColorAndProduct($colorName, $productId) {
+    global $connection;
+    $query  = "SELECT coll.name, coll.id ";
+    $query .= "FROM formulas f ";
+    $query .= "INNER JOIN products p ON (p.id = f.products_id) ";
+    $query .= "INNER JOIN collections coll ON (coll.id = f.collections_id) ";
+    $query .= "INNER JOIN colors c ON (c.id = f.colors_id) ";
+    $query .= "WHERE p.id = {$productId} ";
+    $query .= "AND c.name_short = '{$colorName}' ";
+    $query .= "ORDER BY coll.name ASC";
+    $result = mysqli_query($connection, $query);
+    confirmQuery($result);
+    return $result;
+}
+
+function findProductsForColor($colorName) {
+    global $connection;
+    global $dispenserGroupId;
+    global $dispenserSystemId;
+    $query  = "SELECT DISTINCT p.name, p.id ";
+    $query .= "FROM formulas f ";
+    $query .= "INNER JOIN products p ON (p.id = f.products_id) ";
+    $query .= "INNER JOIN colors c ON (c.id = f.colors_id) ";
+    $query .= "INNER JOIN formulas_has_dispenser_groups fg ON (fg.formulas_id = f.formulas_id) ";
+    $query .= "WHERE fg.dispenser_groups_id = {$dispenserGroupId} ";
+    $query .= "AND fg.dispenser_systems_id = {$dispenserSystemId} ";
+    $query .= "AND c.name_short = '{$colorName}' ";
+    $query .= "ORDER BY p.name ASC";
+    $result = mysqli_query($connection, $query);
+    confirmQuery($result);
+    return $result;
+}
+
+function findCollectionsForColor($colorName) {
+    global $connection;
+    global $dispenserGroupId;
+    global $dispenserSystemId;
+    $query  = "SELECT DISTINCT coll.name, coll.id ";
+    $query .= "FROM formulas f ";
+    $query .= "INNER JOIN collections coll ON (coll.id = f.collections_id) ";
+    $query .= "INNER JOIN colors c ON (c.id = f.colors_id) ";
+    $query .= "INNER JOIN formulas_has_dispenser_groups fg ON (fg.formulas_id = f.formulas_id) ";
+    $query .= "WHERE fg.dispenser_groups_id = {$dispenserGroupId} ";
+    $query .= "AND fg.dispenser_systems_id = {$dispenserSystemId} ";
+    $query .= "AND c.name_short = '{$colorName}' ";
+    $query .= "ORDER BY coll.name ASC";
+    $result = mysqli_query($connection, $query);
+    confirmQuery($result);
+    return $result;
+}
+
 
 // ********************** View functions **********************\\
 

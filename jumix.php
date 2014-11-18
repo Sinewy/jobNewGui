@@ -310,6 +310,51 @@ $collectionsList = showCollectionOptions("all");
     </div>
 </div>
 
+<div class="colorSearchResults" id="colorSearchResultsForCollection">
+    <p><?php echo $lang["SEARCH RESULTS:"]; ?><img id="closeSearchResultsWithArrowC" src="images/arrow-left.png"></p>
+    <div class="searchResults">
+        <p id="subTitleC"><?php echo $lang["PRODUCTS"]; ?></p>
+        <div class="radioBtns" id="collectionRadioBtns">
+        </div>
+    </div>
+    <div class="confirmationLine left">
+        <div id="cancelSearchResultsC" class="button left"><?php echo $lang["Cancel"]; ?></div>
+        <div id="okSearchResultsForCollection" class="button left">OK</div>
+    </div>
+</div>
+
+<div class="colorSearchResults" id="colorSearchResultsForProduct">
+    <p><?php echo $lang["SEARCH RESULTS:"]; ?><img id="closeSearchResultsWithArrowP" src="images/arrow-left.png"></p>
+    <div class="searchResults">
+        <p id="subTitleP"><?php echo $lang["COLLECTIONS"]; ?></p>
+        <div class="radioBtns" id="productRadioBtns">
+        </div>
+    </div>
+    <div class="confirmationLine left">
+        <div id="cancelSearchResultsP" class="button left"><?php echo $lang["Cancel"]; ?></div>
+        <div id="okSearchResultsForProduct" class="button left">OK</div>
+    </div>
+</div>
+
+<div class="colorSearchResults" id="colorSearchResults">
+    <p><?php echo $lang["SEARCH RESULTS:"]; ?><img id="closeSearchResultsWithArrow" src="images/arrow-left.png"></p>
+    <div class="searchResultsP left">
+        <p id="subTitleP"><?php echo $lang["PRODUCTS"]; ?></p>
+        <div class="radioBtns" id="pRadioBtns">
+        </div>
+    </div>
+    <div class="searchResultsC left">
+        <p id="subTitleP"><?php echo $lang["COLLECTIONS"]; ?></p>
+        <div class="radioBtns" id="cRadioBtns">
+        </div>
+    </div>
+    <div class="confirmationLine left">
+        <div id="cancelSearchResults" class="button left"><?php echo $lang["Cancel"]; ?></div>
+        <div id="okSearchResults" class="button left">OK</div>
+    </div>
+</div>
+
+
 <script src="js/vendor/jquery.js"></script>
 <script src="js/vendor/jquery-ui.js"></script>
 <!--<script>-->

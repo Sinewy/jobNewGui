@@ -2,8 +2,8 @@ $(document).ready(function() {
 
     var selectedProductId = -1;
     var selectedCollectionId = -1;
-//    var selectedColorId = -1;
     var selectedFormulaId = -1;
+    var selectedColorName = "";
     var startFrom = "";
 
     function hasCanSize() {
@@ -14,27 +14,38 @@ $(document).ready(function() {
         }
     }
 
-//    Navigation bar - clearing all fields
-    $("#resetAllSearchFields").click(function() {
+    function resetAllFields() {
         console.log("clear all fields");
         console.log("selectedProductId: " + selectedProductId);
         console.log("selectedCollectionId: " + selectedCollectionId);
         console.log("selectedFormulaId: " + selectedFormulaId);
+        console.log("selectedColorName: " + selectedColorName);
         console.log("startFrom: " + startFrom);
 
         selectedProductId = -1;
         selectedCollectionId = -1;
         selectedFormulaId = -1;
+        selectedColorName = "";
         startFrom = "";
 
         updateProductList();
         updateCollectionList();
         updateCanSizeList();
-        $("#color").val("");
+        $("#selectColor").val("");
+    }
+
+//    Navigation bar - clearing all fields
+    $("#resetAllSearchFields").click(function() {
+        resetAllFields();
     });
 
     $("#clearColorsSearch").click(function() {
-        $("#color").val("");
+        $("#selectColor").val("");
+        selectedColorName = "";
+        if(startFrom == "color") {
+            console.log("deleteing start from");
+            resetAllFields();
+        }
     });
 
     $("#selectProduct").change(function() {
@@ -50,6 +61,7 @@ $(document).ready(function() {
         if(selectedProductId == -1 && startFrom == "product") {
             startFrom = "";
         }
+        $("#selectColor").val("");
     });
 
     $("#selectCollection").change(function() {
@@ -64,6 +76,7 @@ $(document).ready(function() {
         if(selectedCollectionId == -1 && startFrom == "collection") {
             startFrom = "";
         }
+        $("#selectColor").val("");
     });
 
     function updateProductList() {
@@ -106,76 +119,173 @@ $(document).ready(function() {
         },
         minLength: 0,
         select: function(event, ui) {
+            if(selectedProductId == -1 && selectedFormulaId == -1 && selectedCollectionId == -1) {
+                startFrom = "color";
+            }
+            selectedColorName = ui.item.label;
+            if(selectedProductId == -1 && selectedCollectionId == -1) {
+                showColorSearchResultWithProductsAndCollections(selectedColorName);
+            } else if(selectedProductId != -1 && selectedCollectionId == -1) {
+                showColorSearchResultWithCollections(selectedColorName);
+            } else if(selectedProductId == -1 && selectedCollectionId != -1) {
+                showColorSearchResultWithProducts(selectedColorName);
+            } else {
+                findFormulaIdForColorProductCollection(selectedColorName);
+            }
             console.log(ui.item.label);
         }
     });
 
+    function showColorSearchResultWithProductsAndCollections(colorName) {
+        var findCollectionsForColorAndProduct = $.post("includes/ajaxCalls/findProductsAndCollectionsForColor.php", {colorName: colorName});
+        findCollectionsForColorAndProduct.success(function(data) {
+            var parsedData = $.parseJSON(data);
+            if(parsedData[0].length == 1 && parsedData[1].length == 1) {
+                selectedProductId = parsedData[0][0].id;
+                selectedCollectionId = parsedData[1][0].id;
+                $("#selectProduct").html("<option value='" + selectedProductId + "'>" + parsedData[0][0].name + "</option>");
+                $("#selectCollection").html("<option value='" + selectedCollectionId + "'>" + parsedData[1][0].name + "</option>");
+                findFormulaIdForColorProductCollection(colorName);
+            //} else if(parsedData[0].length != 1 && parsedData[1].length == 1) {
+            } else {
+                $("#pRadioBtns").html(makeRadioBtnSelect(parsedData[0], "product"));
+                $("#cRadioBtns").html(makeRadioBtnSelect(parsedData[1], "collection"));
+                $("#colorSearchResults").toggle( "slide", {direction: "left"});
+            }
 
-////            var postForColorId = $.post("includes/getSelectedColorId.php", {searchString: ui.item.label});
-//            selectedProduct = -1;
-//            selectedCollection = -1;
-//            selectedColor = -1;
-//
-//            selectedColor = extractColorId(ui.item.label);
-//
-//            console.log(selectedColor);
-//
-//            var postForProductsAndCollections = $.post("includes/getProductsAndCollectionsForColor.php", {scid: selectedColor});
-//            postForProductsAndCollections.success(function(data) {
-//                var resultData = $.parseJSON(data);
-//
-//                console.log(resultData[0].length);
-//                console.log(resultData[1].length);
-//
-//                if(resultData[0].length == 1 && resultData[1].length == 1) {
-//                    console.log("ONE productds and ONE collections");
-//                    $("#product").val(resultData[0][0].name);
-//                    $("#collection").val(resultData[1][0].name);
-//                    selectedProduct = resultData[0][0].id;
-//                    selectedCollection = resultData[1][0].id;
-//                    updateCanSizes(selectedProduct);
-//                    updateColorsView(selectedProduct, selectedCollection, selectedColor);
-//                } else if(resultData[0].length == 1 && resultData[1].length > 1) {
-//                    console.log("ONE productds and more collections");
-//                    selectedProduct = resultData[0][0].id;
-//                    $("#colorPSearchResults").html("<p id='searchTitle'>" + lang["PRODUCTS:"] + "</p><ul class='left'><li>" + resultData[0][0].name + "</li></ul>");
-//                    $("#colorCSearchResults").html(prepareSearchResults(resultData[1], "sColl"));
-//                    $(".searchResultLink").click(function() {
-//                        doOnColorResultLinkClick(this);
-//                    });
-//                    $(".searchResultsForColor").toggle( "slide", {direction: "left"} );
-//                } else if(resultData[0].length > 1 && resultData[1].length == 1) {
-//                    console.log("more productds and ONE collections");
-//                    selectedCollection = resultData[1][0].id;
-//                    $("#colorPSearchResults").html(prepareSearchResults(resultData[0], "sProd"));
-//                    $("#colorCSearchResults").html("<p id='searchTitle'>" + lang["COLLECTIONS:"] + "</p><ul class='left'><li>" + resultData[1][0].name + "</li></ul>");
-//                    $(".searchResultLink").click(function() {
-//                        doOnColorResultLinkClick(this);
-//                    });
-//                    $(".searchResultsForColor").toggle( "slide", {direction: "left"} );
-//                } else if(resultData[0].length == 0 && resultData[1].length == 0) {
-//                    $(".searchResultsForColor").html("<p>" + lang["This color does not exist in any collection or product. Choose another color."] + "</p><div id='closeSearchResultsForColorBtn' class='button'>" + lang["OK - Close"]+ "</div>");
-//                    $("#closeSearchResultsForColorBtn").click(function() {
-//                        $(".searchResultsForColor").toggle( "slide", {direction: "left"} );
-//                        $(".searchResultsForColor").html("<p>" + lang["SEARCH RESULTS:"] + "</p><p>" + lang["PRODUCTS:"] + "</p><ul id='colorPSearchResults'></ul><p>" + lang["COLLECTIONS:"] + "</p><ul id='colorCSearchResults'></ul>");
-//                    });
-//                    $(".searchResultsForColor").toggle( "slide", {direction: "left"} );
-//                } else {
-//                    console.log("more productds and more collections");
-//                    $("#colorPSearchResults").html(prepareSearchResults(resultData[0], "sProd"));
-//                    $("#colorCSearchResults").html(prepareSearchResults(resultData[1], "sColl"));
-//                    $(".searchResultLink").click(function() {
-//                        doOnColorResultLinkClick(this);
-//                    });
-//                    $(".searchResultsForColor").toggle( "slide", {direction: "left"} );
-//                }
-//                console.log(typeof resultData);
-//                console.log(resultData);
-//                console.log(resultData.length);
-//            });
-////            });
-//        }
-//    });
+            console.log(parsedData[0]);
+            console.log(parsedData[1]);
+            console.log(parsedData.length);
+        });
+    }
+
+    function showColorSearchResultWithCollections(colorName) {
+        var findCollectionsForColorAndProduct = $.post("includes/ajaxCalls/findCollectionsForColorAndProduct.php", {colorName: colorName, productId: selectedProductId});
+        findCollectionsForColorAndProduct.success(function(data) {
+            var parsedData = $.parseJSON(data);
+            if(parsedData.length == 1) {
+                console.log("should work");
+                $("#selectCollection").val(parsedData[0].id);
+                selectedCollectionId = parsedData[0].id;
+                findFormulaIdForColorProductCollection(selectedColorName);
+            } else {
+                $("#productRadioBtns").html(makeRadioBtnSelect(parsedData, "collection"));
+                $("#colorSearchResultsForProduct").toggle( "slide", {direction: "left"});
+            }
+        });
+    }
+
+    function showColorSearchResultWithProducts(colorName) {
+        var findProductsForCorlorAndCollection = $.post("includes/ajaxCalls/findProductsForColorAndCollection.php", {colorName: colorName, collectionId: selectedCollectionId});
+        findProductsForCorlorAndCollection.success(function(data) {
+            var parsedData = $.parseJSON(data);
+            if(parsedData.length == 1) {
+                $("#selectProduct").val(parsedData[0].id);
+                selectedProductId = parsedData[0].id;
+                findFormulaIdForColorProductCollection(selectedColorName);
+            } else {
+                $("#collectionRadioBtns").html(makeRadioBtnSelect(parsedData, "product"));
+                $("#colorSearchResultsForCollection").toggle( "slide", {direction: "left"});
+            }
+        });
+
+    }
+
+    function makeRadioBtnSelect(data, rbGroup) {
+        var output = "";
+        if(data.length == 1) {
+            output += "<div class='rbLine'>"
+            output += "<input type='radio' name='" + rbGroup + "' id='" + data[0].id + "' value='" + data[0].id + "' checked>";
+            output += "<label for='" + data[0].id + "'>" + data[0].name + "</label>";
+            output += "</div>";
+            return output;
+        } else {
+            for(var i = 0; i < data.length; i++) {
+                output += "<div class='rbLine'>"
+                output += "<input type='radio' name='" + rbGroup + "' id='" + data[i].id + "' value='" + data[i].id + "'>";
+                output += "<label for='" + data[i].id + "'>" + data[i].name + "</label>";
+                output += "</div>";
+            }
+            return output;
+        }
+    }
+
+    $("#cancelSearchResultsC, #closeSearchResultsWithArrowC").click(function() {
+        $("#colorSearchResultsForCollection").toggle( "slide", {direction: "left"});
+        $("#selectColor").val("");
+        selectedColorName = "";
+    });
+    $("#cancelSearchResultsP, #closeSearchResultsWithArrowP").click(function() {
+        $("#colorSearchResultsForProduct").toggle( "slide", {direction: "left"});
+        $("#selectColor").val("");
+        selectedColorName = "";
+    });
+    $("#cancelSearchResults, #closeSearchResultsWithArrow").click(function() {
+        $("#colorSearchResults").toggle( "slide", {direction: "left"});
+        $("#selectColor").val("");
+        selectedColorName = "";
+    });
+
+    $("#okSearchResultsForCollection").click(function() {
+        if($("input:radio[name='product']").is(":checked")) {
+            selectedProductId = $("input[name='product']:checked").val();
+            $("#selectProduct").val(selectedProductId);
+            findFormulaIdForColorProductCollection(selectedColorName);
+        } else {
+            $("#selectColor").val("");
+            selectedColorName = "";
+        }
+        $("#colorSearchResultsForCollection").toggle( "slide", {direction: "left"});
+    });
+
+    $("#okSearchResultsForProduct").click(function() {
+        if($("input:radio[name='collection']").is(":checked")) {
+            selectedCollectionId = $("input[name='collection']:checked").val();
+            $("#selectCollection").val(selectedCollectionId);
+            findFormulaIdForColorProductCollection(selectedColorName);
+        } else {
+            $("#selectColor").val("");
+            selectedColorName = "";
+        }
+        $("#colorSearchResultsForProduct").toggle( "slide", {direction: "left"});
+    });
+
+    $("#okSearchResults").click(function() {
+        if($("input:radio[name='product']").is(":checked") && $("input:radio[name='collection']").is(":checked")) {
+            selectedProductId = $("input[name='product']:checked").val();
+            selectedCollectionId = $("input[name='collection']:checked").val();
+            $("#selectProduct").html("<option value='" + selectedProductId + "'>" + $("input[name='product']:checked").next().text() + "</option>");
+            $("#selectCollection").html("<option value='" + selectedCollectionId + "'>" + $("input[name='collection']:checked").next().text() + "</option>");
+            findFormulaIdForColorProductCollection(selectedColorName);
+        } else {
+            $("#selectColor").val("");
+            selectedColorName = "";
+            startFrom = "";
+        }
+        $("#colorSearchResults").toggle( "slide", {direction: "left"});
+    });
+
+    function findFormulaIdForColorProductCollection(colorName) {
+        var findFormulaId = $.post("includes/ajaxCalls/findFormulaIdForColorProductCollection.php", {colorName: colorName, productId: selectedProductId, collectionId: selectedCollectionId});
+        findFormulaId.success(function(data) {
+            var parsedData = $.parseJSON(data);
+            selectedFormulaId = parsedData["formulas_id"];
+
+//            console.log(parsedData["formulas_id"]);
+            updateColorDetailView();
+        });
+    }
+
+    function updateColorDetailView() {
+        console.log("... updating color details..");
+        console.log("selectedProductId: " + selectedProductId);
+        console.log("selectedCollectionId: " + selectedCollectionId);
+        console.log("selectedFormulaId: " + selectedFormulaId);
+        console.log("selectedColorName: " + selectedColorName);
+        console.log("startFrom: " + startFrom);
+        console.log("... updating color details..");
+    }
+
 
 //    Show and set key settings
     $("#showSettingsWindow").click(function() {
