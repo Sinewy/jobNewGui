@@ -7,9 +7,30 @@
  */
 
 // ********************** Global variables **********************\\
-//TODO - first write this to SESSION, than get it from there
 $dispenserGroupId = 1;
 $dispenserSystemId = 9;
+
+//$dispenserGroupId = findDispenseGroupSystemCountry()["dispenserGroupId"];
+//$dispenserSystemId = findDispenseGroupSystemCountry()["dispenserSystemId"];
+//$countryId = findDispenseGroupSystemCountry()["countryId"];
+
+function findDispenseGroupSystemCountry() {
+    global $connection;
+    $query = "SELECT  * ";
+    $query .= "FROM settings ";
+    $query .= "WHERE id = 1 ";
+    $query .= "LIMIT 1";
+    $result = mysqli_query($connection, $query);
+    confirmQuery($result);
+    if($data = mysqli_fetch_assoc($result)) {
+        return $data;
+    } else {
+        return null;
+    }
+}
+
+
+
 
 // ********************** Utility functions **********************\\
 
@@ -26,7 +47,47 @@ function confirmQuery($resultSet) {
     }
 }
 
+//******************* Activation Functions END *********************\\
+
+function isActivated() {
+    if(findDeviceInfo()["status"] == 1) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function confirmActivated() {
+    if (isActivated()) {
+        redirectTo("jumix.php");
+    } else {
+        redirectTo("chooseLanguage.php");
+    }
+}
+
+function confirmActivatedOnJumix() {
+    if (!isActivated()) {
+        redirectTo("index.php");
+    }
+}
+
+//******************* Activation Functions END *********************\\
+
 // ********************** Database queries **********************\\
+
+function findDeviceInfo() {
+    global $connection;
+    $query  = "SELECT * ";
+    $query .= "FROM device_info ";
+    $query .= "LIMIT 1";
+    $result = mysqli_query($connection, $query);
+    confirmQuery($result);
+    if($device = mysqli_fetch_assoc($result)) {
+        return $device;
+    } else {
+        return null;
+    }
+}
 
 function findAllProducts() {
     global $connection;
@@ -249,7 +310,6 @@ function findColorantsForSelectedColor($formulaId) {
     $result = mysqli_query($connection, $query);
     confirmQuery($result);
     return $result;
-
 }
 
 function findAvailableColors($productId, $collectionId) {
@@ -274,6 +334,50 @@ function findAvailableColors($productId, $collectionId) {
     $result = mysqli_query($connection, $query);
     confirmQuery($result);
     return $result;
+}
+
+function findDispenserSystems() {
+    global $connection;
+    $query = "SELECT * ";
+    $query .= "FROM dispensers_systems ";
+    $query .= "ORDER BY name ASC";
+    $result = mysqli_query($connection, $query);
+    confirmQuery($result);
+    return $result;
+}
+
+function rememberActivationCode($activationCode) {
+    global $connection;
+    $query  = "UPDATE settings ";
+    $query  .= "SET apikey = '{$activationCode}' ";
+    $query  .= "WHERE id = 1 ";
+    $result = mysqli_query($connection, $query);
+    confirmQuery($result);
+}
+
+function findApiKey() {
+    global $connection;
+    $query = "SELECT  apikey ";
+    $query .= "FROM settings ";
+    $query .= "WHERE id = 1 ";
+    $query .= "LIMIT 1";
+    $result = mysqli_query($connection, $query);
+    confirmQuery($result);
+    if($data = mysqli_fetch_assoc($result)) {
+        return $data["apikey"];
+    } else {
+        return null;
+    }
+}
+
+function activateLocally($remoteId) {
+    global $connection;
+    $query = "UPDATE device_info SET ";
+    $query .= "status = '1' ";
+    $query .= "WHERE remoteId = '{$remoteId}' ";
+    $result = mysqli_query($connection, $query);
+    confirmQuery($result);
+    return true;
 }
 
 // ********************** View functions **********************\\
@@ -339,6 +443,20 @@ function showAvailableColors($productId, $collectionId) {
             $output .= "<div class='colorSwatch left' style='background-color: #" . $hexcolor. "' id='" . $data["formulaId"] . "'>";
             $output .= "<div class='colorSwatchName'>" . $data["colorName"] . "</div>";
             $output .= "</div>";
+        }
+    }
+    return $output;
+}
+
+function showDispenserSystemOptions() {
+    $dataSet = findDispenserSystems();
+    $output = "";
+    $output .= "<option value='-1'>&nbsp;</option>";
+    if (mysqli_num_rows($dataSet) > 0) {
+        while ($data = mysqli_fetch_assoc($dataSet)) {
+            $output .= "<option value='" . $data["id"] . "'>";
+            $output .= $data["name"];
+            $output .= "</option>";
         }
     }
     return $output;

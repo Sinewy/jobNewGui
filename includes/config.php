@@ -13,7 +13,9 @@ define("DB_PASS",   "mirna");
 define("DB_NAME",   "jumix_staging_gui");
 
 //define("API_PATH", "http://10.20.0.52:8000/api/v1");
-define("API_PATH", "http://jub.virtua-it.si/web/public/api/v1");
+//define("API_PATH", "http://jub.virtua-it.si/web/public/api/v1");
+
+define("API_PATH", "http://jubstag.virtua-it.si/web/public/api/v1");
 //define("API_PATH", "http://activation.jub.local/web/public/api/v1");
 define("API_MIXER_DATA", API_PATH."/mixers");
 define("API_DEVICE_INFO", API_MIXER_DATA."/info");
@@ -22,4 +24,6 @@ define("API_ACTIVATE", "/activate");
 define("API_DEACTIVATE_DEVICE", "/deactivate");
 
 define("DEFAULT_LANGUAGE", "sl-SI");
+
+define("DEFAULT_VAT_RATE", "20");
 

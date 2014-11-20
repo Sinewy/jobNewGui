@@ -5,7 +5,8 @@
 <?php require_once("includes/globalFunctions.php"); ?>
 
 <?php
-//confirmActivatedOnJumix();
+confirmActivatedOnJumix();
+
 //
 //$langChanage = false;
 //$selectedProd = -1;
@@ -337,7 +338,8 @@ $collectionsList = showCollectionOptions("all");
 <!--    var pselectedColl = --><?php //echo $selectedColl; ?><!--;-->
 <!--    var pselectedColor = --><?php //echo $selectedColor; ?><!--;-->
 <!--</script>-->
-<script src="js/main.js"></script>
+<!--<script src="js/main.js"></script>-->
+<script src="js/main.unmin.js"></script>
 
 <?php include("includes/footer.php"); ?>
 
