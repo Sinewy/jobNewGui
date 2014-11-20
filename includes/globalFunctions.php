@@ -252,6 +252,30 @@ function findColorantsForSelectedColor($formulaId) {
 
 }
 
+function findAvailableColors($productId, $collectionId) {
+    global $connection;
+    global $dispenserGroupId;
+    global $dispenserSystemId;
+    $query  = "SELECT f.formulas_id as formulaId, c.name_short as colorName, c.R as colorR, c.G as colorG, c.B as colorB ";
+    $query .= "FROM formulas_has_dispenser_groups fg ";
+    $query .= "INNER JOIN formulas f ON (f.formulas_id = fg.formulas_id) ";
+    $query .= "INNER JOIN products p ON (p.id = f.products_id) ";
+    $query .= "INNER JOIN collections coll ON (coll.id = f.collections_id) ";
+    $query .= "INNER JOIN colors c ON (c.id = f.colors_id) ";
+    $query .= "WHERE fg.dispenser_groups_id = {$dispenserGroupId} ";
+    $query .= "AND fg.dispenser_systems_id = {$dispenserSystemId} ";
+    if($productId != -1) {
+        $query .= "AND p.id = {$productId} ";
+    }
+    if($collectionId != -1) {
+        $query .= "AND coll.id = {$collectionId} ";
+    }
+    $query .= "ORDER BY c.name_short ASC";
+    $result = mysqli_query($connection, $query);
+    confirmQuery($result);
+    return $result;
+}
+
 // ********************** View functions **********************\\
 
 function showProductOptions($key) {
@@ -293,7 +317,7 @@ function showCollectionOptions($key) {
 function showCanSizeOptions($productId) {
     $dataSet = findAllCanSizesForProduct($productId);
     $output = "";
-    $output .= "<option value='-1'>&nbsp;</option>>";
+    $output .= "<option value='-1'>&nbsp;</option>";
     if (mysqli_num_rows($dataSet) > 0) {
         while ($data = mysqli_fetch_assoc($dataSet)) {
             $output .= "<option value='" . $data["id"] . "'>";
@@ -302,4 +326,33 @@ function showCanSizeOptions($productId) {
         }
     }
     return $output;
+}
+
+function showAvailableColors($productId, $collectionId) {
+    $dataSet = findAvailableColors($productId, $collectionId);
+    $output = "";
+    if (mysqli_num_rows($dataSet) > 0) {
+        while ($data = mysqli_fetch_assoc($dataSet)) {
+
+            $hexcolor = makeHexColorFromRgb($data["colorR"], $data["colorG"], $data["colorB"]);
+
+            $output .= "<div class='colorSwatch left' style='background-color: #" . $hexcolor. "' id='" . $data["formulaId"] . "'>";
+            $output .= "<div class='colorSwatchName'>" . $data["colorName"] . "</div>";
+            $output .= "</div>";
+        }
+    }
+    return $output;
+}
+
+function makeHexColorFromRgb($r, $g, $b) {
+
+    $rHex = dechex($r);
+    $gHex = dechex($g);
+    $bHex = dechex($b);
+
+    $rHex = strlen($rHex) < 2 ? "0" . $rHex : $rHex;
+    $gHex = strlen($gHex) < 2 ? "0" . $gHex : $gHex;
+    $bHex = strlen($bHex) < 2 ? "0" . $bHex : $bHex;
+
+    return $rHex . $gHex . $bHex;
 }

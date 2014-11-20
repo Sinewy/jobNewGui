@@ -1,11 +1,16 @@
 $(document).ready(function() {
 
+    resetAllFields();
+
     var selectedProductId = -1;
     var selectedCollectionId = -1;
     var selectedFormulaId = -1;
     var selectedCansizeId = -1;
     var selectedColorName = "";
     var startFrom = "";
+
+    var globalColorantsForColor = [];
+    var globalColorDetails = [];
 
     function hasCanSize() {
         if($.trim($("#customCanSize").val()) == "" && $("#selectCanSize").prop("selectedIndex") == 0) {
@@ -22,6 +27,8 @@ $(document).ready(function() {
         console.log("selectedFormulaId: " + selectedFormulaId);
         console.log("selectedCansizeId: " + selectedCansizeId);
         console.log("selectedColorName: " + selectedColorName);
+        console.log("globalColorantsForColor: " + globalColorantsForColor);
+        console.log("globalColorDetails: " + globalColorDetails);
         console.log("startFrom: " + startFrom);
 
         selectedProductId = -1;
@@ -107,6 +114,9 @@ $(document).ready(function() {
                 $("#selectCanSizeError").fadeIn();
             }
         });
+
+        globalColorantsForColor = [];
+        globalColorDetails = [];
     }
 //
 //    Navigation bar - clearing all fields
@@ -120,6 +130,8 @@ $(document).ready(function() {
         if(startFrom == "color") {
             console.log("deleteing start from");
             resetAllFields();
+        } else {
+            resetDisplay();
         }
     });
 
@@ -136,7 +148,11 @@ $(document).ready(function() {
         if(selectedProductId == -1 && startFrom == "product") {
             startFrom = "";
         }
+        if(selectedProductId != -1) {
+            updateAvailableColors();
+        }
         $("#selectColor").val("");
+        resetDisplay();
     });
 
     $("#selectCollection").change(function() {
@@ -151,7 +167,11 @@ $(document).ready(function() {
         if(selectedCollectionId == -1 && startFrom == "collection") {
             startFrom = "";
         }
+        if(selectedCollectionId != -1) {
+            updateAvailableColors();
+        }
         $("#selectColor").val("");
+        resetDisplay();
     });
 
     function updateProductList() {
@@ -370,6 +390,10 @@ $(document).ready(function() {
     }
 
     function displayColorDetails(data) {
+
+        globalColorDetails = data["colorData"];
+        globalColorantsForColor = data["colorantData"];
+
         var colorData = data["colorData"];
         var colorantData = data["colorantData"];
 
@@ -395,6 +419,8 @@ $(document).ready(function() {
         colorDetail += "</div>";
 
         var componentsList = "";
+        var baseName = colorData["baseName"].substr(colorData["baseName"].length-6);
+
         componentsList += "<div class='row priceAndInfo'>";
         componentsList += "<div class='infoBtn left' id='showPriceInfoPopup' ><img src='images/moreInfoIconV3.svg'></div>";
         componentsList += "<div class='bigPrice left'>-</div>";
@@ -408,7 +434,7 @@ $(document).ready(function() {
         componentsList += "<div class='colorantList'>";
         componentsList += "<div class='row base'>";
         componentsList += "<div class='left compColor'>&nbsp;</div>";
-        componentsList += "<div class='left compName'><p>" + colorData["baseName"]  + "</p></div>";
+        componentsList += "<div class='left compName'><p>" + baseName  + "</p></div>";
         componentsList += "<div class='left compAmount'><p>-</p></div>";
         componentsList += "<div class='left compPrice'><p>-</p></div>";
         componentsList += "</div>";
@@ -435,6 +461,98 @@ $(document).ready(function() {
                 $("#selectCanSizeError").fadeIn();
             }
         });
+    }
+
+    function randomIntFromInterval(min,max) {
+        return (Math.random()*(max-min+1)+min).toFixed(2);
+    }
+
+    function updatePriceAndQuantitiesToRandom() {
+        var vatRate = 1.2;
+        var randPrice = randomIntFromInterval(40, 90);
+        var fullPrice = (randPrice * vatRate).toFixed(2);
+        var vat = (fullPrice - randPrice).toFixed(2);
+        var colorantData = globalColorantsForColor;
+        var colorData = globalColorDetails;
+
+        console.log(colorantData);
+        console.log(colorantData.length);
+
+        var baseName = colorData["baseName"].substr(colorData["baseName"].length-6);
+
+            var componentsList = "";
+            componentsList += "<div class='row priceAndInfo'>";
+            componentsList += "<div class='infoBtn left' id='showPriceInfoPopup' ><img src='images/moreInfoIconV3.svg'></div>";
+            componentsList += "<div class='bigPrice left'>€" + fullPrice + "</div>";
+            componentsList += "</div>";
+            componentsList += "<div class='components'>";
+            componentsList += "<div class='row tableHeader'>";
+            componentsList += "<div class='left compNameHeader'><p>Component Name</p></div>";
+            componentsList += "<div class='left compAmount'><p>Amount</p></div>";
+            componentsList += "<div class='left compPrice'><p>Price</p></div>";
+            componentsList += "</div>";
+            componentsList += "<div class='colorantList'>";
+            componentsList += "<div class='row base'>";
+            componentsList += "<div class='left compColor'>&nbsp;</div>";
+            componentsList += "<div class='left compName'><p>" + baseName + "</p></div>";
+            componentsList += "<div class='left compAmount'><p>" + $("#selectCanSize option:selected").text() + "</p></div>";
+            componentsList += "<div class='left compPrice'><p>€" + fullPrice*0.5 + "</p></div>";
+            componentsList += "</div>";
+            var priceForColorants = (fullPrice*0.5)/colorantData.length;
+            for (var i = 0; i < colorantData.length; i++) {
+                var cColor = makeHexColorFromRgb(colorantData[i]["colorantR"], colorantData[i]["colorantG"], colorantData[i]["colorantB"]);
+                componentsList += "<div class='row'>";
+                componentsList += "<div class='left compColor'><div class='colorantColor' style='background-color: #" + cColor + "'>&nbsp;</div></div>";
+                componentsList += "<div class='left compName'><p>" + colorantData[i]["name"] + "</p></div>";
+                componentsList += "<div class='left compAmount'><p>" + randomIntFromInterval(0.1, 2) + "</p></div>";
+                componentsList += "<div class='left compPrice'><p>€" + priceForColorants.toFixed(2) + "</p></div>";
+                componentsList += "</div>";
+            }
+            componentsList += "</div>";
+            componentsList += "</div>";
+
+        var priceInfoPopupData = "";
+        priceInfoPopupData += "<div class='row clearFix'>";
+        priceInfoPopupData += "<div class='propertyName left'>Price Excluding VAT</div>";
+        priceInfoPopupData += "<div class='propertyValue left'>€" + randPrice + "</div>";
+        priceInfoPopupData += "</div>";
+        priceInfoPopupData += "<div class='row clearFix'>";
+        priceInfoPopupData += "<div class='propertyName left'>VAT</div>";
+        priceInfoPopupData += "<div class='propertyValue left'>€" + vat + "</div>";
+        priceInfoPopupData += "</div>";
+        priceInfoPopupData += "<div class='row clearFix'>";
+        priceInfoPopupData += "<div class='propertyName left'>VAT Rate</div>";
+        priceInfoPopupData += "<div class='propertyValue left'>20%</div>";
+        priceInfoPopupData += "</div>";
+        priceInfoPopupData += "<div class='row clearFix'>";
+        priceInfoPopupData += "<div class='propertyName left'>Price Group</div>";
+        priceInfoPopupData += "<div class='propertyValue left'>I - IV</div>";
+        priceInfoPopupData += "</div>";
+        priceInfoPopupData += "<div class='row clearFix'>";
+        priceInfoPopupData += "<div class='propertyName left'>Pricelist</div>";
+        priceInfoPopupData += "<div class='propertyValue left'>Testni cenik</div>";
+        priceInfoPopupData += "</div>";
+        priceInfoPopupData += "<div class='closeBtn button' id='closePriceInfoPopup'>Close</div>";
+
+        $("#priceInfoPopup").html(priceInfoPopupData);
+
+        $("#closePriceInfoPopup").click(function() {
+            $("#priceInfoPopup").fadeOut();
+        });
+
+//            $(".colorDetail").html(colorDetail);
+            $(".componentsList").html(componentsList);
+//            $(".colorDetailMain").css("border-color", "#" + color);
+
+            $("#showPriceInfoPopup").click(function () {
+                if (hasCanSize()) {
+                    $("#priceInfoPopup").fadeIn();
+                } else {
+                    $("#selectCanSizeError").fadeIn();
+                }
+            });
+
+
     }
 
     function updatePricesAndQuantities() {
@@ -488,6 +606,48 @@ $(document).ready(function() {
 
     function updatePricesAndQuantitiesToUnknown() {
 
+        var colorantData = globalColorantsForColor;
+        var colorData = globalColorDetails;
+        var baseName = colorData["baseName"].substr(colorData["baseName"].length-6);
+
+        var componentsList = "";
+        componentsList += "<div class='row priceAndInfo'>";
+        componentsList += "<div class='infoBtn left' id='showPriceInfoPopup' ><img src='images/moreInfoIconV3.svg'></div>";
+        componentsList += "<div class='bigPrice left'>-</div>";
+        componentsList += "</div>";
+        componentsList += "<div class='components'>";
+        componentsList += "<div class='row tableHeader'>";
+        componentsList += "<div class='left compNameHeader'><p>Component Name</p></div>";
+        componentsList += "<div class='left compAmount'><p>Amount</p></div>";
+        componentsList += "<div class='left compPrice'><p>Price</p></div>";
+        componentsList += "</div>";
+        componentsList += "<div class='colorantList'>";
+        componentsList += "<div class='row base'>";
+        componentsList += "<div class='left compColor'>&nbsp;</div>";
+        componentsList += "<div class='left compName'><p>" + baseName + "</p></div>";
+        componentsList += "<div class='left compAmount'><p>-</p></div>";
+        componentsList += "<div class='left compPrice'><p>-</p></div>";
+        componentsList += "</div>";
+        for (var i = 0; i < colorantData.length; i++) {
+            var cColor = makeHexColorFromRgb(colorantData[i]["colorantR"], colorantData[i]["colorantG"], colorantData[i]["colorantB"]);
+            componentsList += "<div class='row'>";
+            componentsList += "<div class='left compColor'><div class='colorantColor' style='background-color: #" + cColor + "'>&nbsp;</div></div>";
+            componentsList += "<div class='left compName'><p>" + colorantData[i]["name"] + "</p></div>";
+            componentsList += "<div class='left compAmount'><p>-</p></div>";
+            componentsList += "<div class='left compPrice'><p>-</p></div>";
+            componentsList += "</div>";
+        }
+        componentsList += "</div>";
+        componentsList += "</div>";
+
+        $(".componentsList").html(componentsList);
+        $("#showPriceInfoPopup").click(function () {
+            if (hasCanSize()) {
+                $("#priceInfoPopup").fadeIn();
+            } else {
+                $("#selectCanSizeError").fadeIn();
+            }
+        });
     }
 
 //    Show and set key settings
@@ -573,9 +733,11 @@ $(document).ready(function() {
         if($("#selectCanSize").prop("selectedIndex") != 0) {
             $("#customCanSize").val("");
             console.log(selectedCansizeId);
+            console.log($("#selectCanSize").text());
             //updatePricesAndQuantities();
+            updatePriceAndQuantitiesToRandom();
         } else {
-            //updatePricesAndQuantitiesToUnknown();
+            updatePricesAndQuantitiesToUnknown();
         }
     });
 
@@ -594,6 +756,13 @@ $(document).ready(function() {
         bHex = bHex.length < 2 ? "0" + bHex : bHex;
 
         return rHex + gHex + bHex;
+    }
+
+    function updateAvailableColors() {
+        var findAvailableColors = $.post("includes/ajaxCalls/findAvailableColors.php", {productId: selectedProductId, collectionId: selectedCollectionId, formulaId: selectedFormulaId});
+        findAvailableColors.success(function(data) {
+            $(".availableColorsHideScroller").html(data);
+        });
     }
 
 });
