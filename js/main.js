@@ -3,6 +3,7 @@ $(document).ready(function() {
     var selectedProductId = -1;
     var selectedCollectionId = -1;
     var selectedFormulaId = -1;
+    var selectedCansizeId = -1;
     var selectedColorName = "";
     var startFrom = "";
 
@@ -19,12 +20,14 @@ $(document).ready(function() {
         console.log("selectedProductId: " + selectedProductId);
         console.log("selectedCollectionId: " + selectedCollectionId);
         console.log("selectedFormulaId: " + selectedFormulaId);
+        console.log("selectedCansizeId: " + selectedCansizeId);
         console.log("selectedColorName: " + selectedColorName);
         console.log("startFrom: " + startFrom);
 
         selectedProductId = -1;
         selectedCollectionId = -1;
         selectedFormulaId = -1;
+        selectedCansizeId = -1;
         selectedColorName = "";
         startFrom = "";
 
@@ -32,8 +35,80 @@ $(document).ready(function() {
         updateCollectionList();
         updateCanSizeList();
         $("#selectColor").val("");
+        $("#customCanSize").val("");
+
+        resetDisplay();
     }
 
+    function resetDisplay() {
+        var colorDetail = "";
+        colorDetail += "<div class='colorInfo'>";
+        colorDetail += "<p class='productName'>Product: -</p>";
+        colorDetail += "<p class='elementName'>Collection: -</p>";
+        colorDetail += "<p class='elementName'>Color name: -</p>";
+        colorDetail += "<div class='approximateColor clearFix'>";
+        colorDetail += "<div class='selectedColor' style='background-color: #000000'>&nbsp;</div>";
+        colorDetail += "</div>";
+        colorDetail += "<p class='elementName'>Substrat: -</p>";
+        colorDetail += "<div class='warningInfo'>";
+        colorDetail += "<p>Comment:</p>";
+        colorDetail += "<p>-</p>";
+        colorDetail += "</div>";
+        colorDetail += "<div class='warningInfo'>";
+        colorDetail += "<p>Warning:</p>";
+        colorDetail += "<p>-</p>";
+        colorDetail += "</div>";
+        colorDetail += "</div>";
+
+        var componentsList = "";
+        componentsList += "<div class='row priceAndInfo'>";
+        componentsList += "<div class='infoBtn left' id='showPriceInfoPopup' ><img src='images/moreInfoIconV3.svg'></div>";
+        componentsList += "<div class='bigPrice left'>-</div>";
+        componentsList += "</div>";
+        componentsList += "<div class='components'>";
+        componentsList += "<div class='row tableHeader'>";
+        componentsList += "<div class='left compNameHeader'><p>Component Name</p></div>";
+        componentsList += "<div class='left compAmount'><p>Amount</p></div>";
+        componentsList += "<div class='left compPrice'><p>Price</p></div>";
+        componentsList += "</div>";
+        componentsList += "<div class='colorantList'>";
+        componentsList += "<div class='row base'>";
+        componentsList += "<div class='left compColor'>&nbsp;</div>";
+        componentsList += "<div class='left compName'><p>Base NAME</p></div>";
+        componentsList += "<div class='left compAmount'><p>-</p></div>";
+        componentsList += "<div class='left compPrice'><p>-</p></div>";
+        componentsList += "</div>";
+        for(var i = 0; i < 6; i++) {
+            componentsList += "<div class='row'>";
+            componentsList += "<div class='left compColor'><div class='colorantColor'>&nbsp;</div></div>";
+            componentsList += "<div class='left compName'><p>Colorant Name</p></div>";
+            componentsList += "<div class='left compAmount'><p>-</p></div>";
+            componentsList += "<div class='left compPrice'><p>-</p></div>";
+            componentsList += "</div>";
+        }
+        componentsList += "</div>";
+        componentsList += "</div>";
+
+        var colorsList = "";
+        for(var i = 0; i < 6; i++) {
+            colorsList += "<div class='colorSwatch left'>";
+            colorsList += "<div class='colorSwatchName'>COLORNAME" + i + "</div>";
+            colorsList += "</div>";
+        }
+        $(".colorDetail").html(colorDetail);
+        $(".componentsList").html(componentsList);
+        $(".availableColorsHideScroller").html(colorsList);
+        $(".colorDetailMain").css("border-color", "#000000");
+
+        $("#showPriceInfoPopup").click(function() {
+            if(hasCanSize()) {
+                $("#priceInfoPopup").fadeIn();
+            } else {
+                $("#selectCanSizeError").fadeIn();
+            }
+        });
+    }
+//
 //    Navigation bar - clearing all fields
     $("#resetAllSearchFields").click(function() {
         resetAllFields();
@@ -281,11 +356,139 @@ $(document).ready(function() {
         console.log("selectedProductId: " + selectedProductId);
         console.log("selectedCollectionId: " + selectedCollectionId);
         console.log("selectedFormulaId: " + selectedFormulaId);
+        console.log("selectedCansizeId: " + selectedCansizeId);
         console.log("selectedColorName: " + selectedColorName);
         console.log("startFrom: " + startFrom);
         console.log("... updating color details..");
+
+        var findDataForSelectedColor = $.post("includes/ajaxCalls/findDataForSelectedColor.php", {productId: selectedProductId, collectionId: selectedCollectionId, formulaId: selectedFormulaId});
+        findDataForSelectedColor.success(function(data) {
+            var parsedData = $.parseJSON(data);
+            //console.log(parsedData);
+            displayColorDetails(parsedData);
+        });
     }
 
+    function displayColorDetails(data) {
+        var colorData = data["colorData"];
+        var colorantData = data["colorantData"];
+
+        var color = makeHexColorFromRgb(colorData["colorR"], colorData["colorG"], colorData["colorB"]);
+
+        var colorDetail = "";
+        colorDetail += "<div class='colorInfo'>";
+        colorDetail += "<p class='productName'>Product: " + colorData["productName"] + "</p>";
+        colorDetail += "<p class='elementName'>Collection: " + colorData["collectionName"] + "</p>";
+        colorDetail += "<p class='elementName'>Color name: " + colorData["colorName"] + "</p>";
+        colorDetail += "<div class='approximateColor clearFix'>";
+        colorDetail += "<div class='selectedColor' style='background-color: #" + color + "'>&nbsp;</div>";
+        colorDetail += "</div>";
+        colorDetail += "<p class='elementName'>Substrat: " + colorData["sustrate"] + "</p>";
+        colorDetail += "<div class='warningInfo'>";
+        colorDetail += "<p>Comment:</p>";
+        colorDetail += "<p>" + colorData["COMMENTS"] + "</p>";
+        colorDetail += "</div>";
+        colorDetail += "<div class='warningInfo'>";
+        colorDetail += "<p>Warning:</p>";
+        colorDetail += "<p>" + colorData["WARNING_MESSAGE"] + "</p>";
+        colorDetail += "</div>";
+        colorDetail += "</div>";
+
+        var componentsList = "";
+        componentsList += "<div class='row priceAndInfo'>";
+        componentsList += "<div class='infoBtn left' id='showPriceInfoPopup' ><img src='images/moreInfoIconV3.svg'></div>";
+        componentsList += "<div class='bigPrice left'>-</div>";
+        componentsList += "</div>";
+        componentsList += "<div class='components'>";
+        componentsList += "<div class='row tableHeader'>";
+        componentsList += "<div class='left compNameHeader'><p>Component Name</p></div>";
+        componentsList += "<div class='left compAmount'><p>Amount</p></div>";
+        componentsList += "<div class='left compPrice'><p>Price</p></div>";
+        componentsList += "</div>";
+        componentsList += "<div class='colorantList'>";
+        componentsList += "<div class='row base'>";
+        componentsList += "<div class='left compColor'>&nbsp;</div>";
+        componentsList += "<div class='left compName'><p>" + colorData["baseName"]  + "</p></div>";
+        componentsList += "<div class='left compAmount'><p>-</p></div>";
+        componentsList += "<div class='left compPrice'><p>-</p></div>";
+        componentsList += "</div>";
+        for(var i = 0; i < colorantData.length; i++) {
+            var cColor = makeHexColorFromRgb(colorantData[i]["colorantR"], colorantData[i]["colorantG"], colorantData[i]["colorantB"]);
+            componentsList += "<div class='row'>";
+            componentsList += "<div class='left compColor'><div class='colorantColor' style='background-color: #" + cColor + "'>&nbsp;</div></div>";
+            componentsList += "<div class='left compName'><p>" + colorantData[i]["name"] + "</p></div>";
+            componentsList += "<div class='left compAmount'><p>-</p></div>";
+            componentsList += "<div class='left compPrice'><p>-</p></div>";
+            componentsList += "</div>";
+        }
+        componentsList += "</div>";
+        componentsList += "</div>";
+
+        $(".colorDetail").html(colorDetail);
+        $(".componentsList").html(componentsList);
+        $(".colorDetailMain").css("border-color", "#" + color);
+
+        $("#showPriceInfoPopup").click(function() {
+            if(hasCanSize()) {
+                $("#priceInfoPopup").fadeIn();
+            } else {
+                $("#selectCanSizeError").fadeIn();
+            }
+        });
+    }
+
+    function updatePricesAndQuantities() {
+        var findPricesAndQuantities = $.post("includes/ajaxCalls/findPricesAndQuantities.php", {productId: selectedProductId, collectionId: selectedCollectionId, formulaId: selectedFormulaId});
+        findPricesAndQuantities.success(function(data) {
+            var parsedData = $.parseJSON(data);
+
+//            var componentsList = "";
+//            componentsList += "<div class='row priceAndInfo'>";
+//            componentsList += "<div class='infoBtn left' id='showPriceInfoPopup' ><img src='images/moreInfoIconV3.svg'></div>";
+//            componentsList += "<div class='bigPrice left'>-</div>";
+//            componentsList += "</div>";
+//            componentsList += "<div class='components'>";
+//            componentsList += "<div class='row tableHeader'>";
+//            componentsList += "<div class='left compNameHeader'><p>Component Name</p></div>";
+//            componentsList += "<div class='left compAmount'><p>Amount</p></div>";
+//            componentsList += "<div class='left compPrice'><p>Price</p></div>";
+//            componentsList += "</div>";
+//            componentsList += "<div class='colorantList'>";
+//            componentsList += "<div class='row base'>";
+//            componentsList += "<div class='left compColor'>&nbsp;</div>";
+//            componentsList += "<div class='left compName'><p>" + colorData["baseName"] + "</p></div>";
+//            componentsList += "<div class='left compAmount'><p>-</p></div>";
+//            componentsList += "<div class='left compPrice'><p>-</p></div>";
+//            componentsList += "</div>";
+//            for (var i = 0; i < colorantData.length; i++) {
+//                var cColor = makeHexColorFromRgb(colorantData[i]["colorantR"], colorantData[i]["colorantG"], colorantData[i]["colorantB"]);
+//                componentsList += "<div class='row'>";
+//                componentsList += "<div class='left compColor'><div class='colorantColor' style='background-color: #" + cColor + "'>&nbsp;</div></div>";
+//                componentsList += "<div class='left compName'><p>" + colorantData[i]["name"] + "</p></div>";
+//                componentsList += "<div class='left compAmount'><p>-</p></div>";
+//                componentsList += "<div class='left compPrice'><p>-</p></div>";
+//                componentsList += "</div>";
+//            }
+//            componentsList += "</div>";
+//            componentsList += "</div>";
+//
+//            $(".colorDetail").html(colorDetail);
+//            $(".componentsList").html(componentsList);
+//            $(".colorDetailMain").css("border-color", "#" + color);
+//
+//            $("#showPriceInfoPopup").click(function () {
+//                if (hasCanSize()) {
+//                    $("#priceInfoPopup").fadeIn();
+//                } else {
+//                    $("#selectCanSizeError").fadeIn();
+//                }
+//            });
+        });
+    }
+
+    function updatePricesAndQuantitiesToUnknown() {
+
+    }
 
 //    Show and set key settings
     $("#showSettingsWindow").click(function() {
@@ -302,7 +505,11 @@ $(document).ready(function() {
 
 //    Show extra price information
     $("#showPriceInfoPopup").click(function() {
-        $("#priceInfoPopup").fadeIn();
+        if(hasCanSize()) {
+            $("#priceInfoPopup").fadeIn();
+        } else {
+            $("#selectCanSizeError").fadeIn();
+        }
     });
 
     $("#closePriceInfoPopup").click(function() {
@@ -355,14 +562,20 @@ $(document).ready(function() {
     $("#customCanSize").change(function() {
         if($.trim($("#customCanSize").val()) != "") {
             $("#selectCanSize").prop("selectedIndex", 0);
+            selectedCansizeId = -1;
         } else {
             $("#customCanSize").val("");
         }
     });
 
     $("#selectCanSize").change(function() {
+        selectedCansizeId = $("#selectCanSize").val();
         if($("#selectCanSize").prop("selectedIndex") != 0) {
             $("#customCanSize").val("");
+            console.log(selectedCansizeId);
+            //updatePricesAndQuantities();
+        } else {
+            //updatePricesAndQuantitiesToUnknown();
         }
     });
 
@@ -370,5 +583,17 @@ $(document).ready(function() {
         $("#customCanSize").val("");
     });
 
+    function makeHexColorFromRgb(r, g, b) {
+
+        var rHex = parseInt(r).toString(16);
+        var gHex = parseInt(g).toString(16);
+        var bHex = parseInt(b).toString(16);
+
+        rHex = rHex.length < 2 ? "0" + rHex : rHex;
+        gHex = gHex.length < 2 ? "0" + gHex : gHex;
+        bHex = bHex.length < 2 ? "0" + bHex : bHex;
+
+        return rHex + gHex + bHex;
+    }
 
 });

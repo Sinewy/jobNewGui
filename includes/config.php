@@ -9,7 +9,8 @@
 define("DB_HOST",   "localhost");
 define("DB_USER",   "jumix");
 define("DB_PASS",   "mirna");
-define("DB_NAME",   "jumix_test_gui");
+//define("DB_NAME",   "jumix_test_gui");
+define("DB_NAME",   "jumix_staging_gui");
 
 //define("API_PATH", "http://10.20.0.52:8000/api/v1");
 define("API_PATH", "http://jub.virtua-it.si/web/public/api/v1");

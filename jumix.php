@@ -77,7 +77,8 @@ $collectionsList = showCollectionOptions("all");
             <p class="productName">Product: JubosilColor Silicate (Jubosil FX)</p>
             <p class="elementName">Collection: TNS - Weber Terranova Farben Spectrum</p>
             <p class="elementName">Color name: 6OGM35MGO230FERT</p>
-            <div class="approximateColor clearFix"><div class="selectedColor">&nbsp;</div>
+            <div class="approximateColor clearFix">
+                <div class="selectedColor">&nbsp;</div>
             </div>
             <p class="elementName">Substrat: Unigrund, Acrylcolor</p>
             <div class="warningInfo">
@@ -132,11 +133,11 @@ $collectionsList = showCollectionOptions("all");
                     <div class='left compAmount'><p>0.34 ml</p></div>
                     <div class='left compPrice'><p>€12.45</p></div>
                 </div>
-<!--                <div class='row'>-->
-<!--                    <div class='left compColor'><div class='colorantColor'>&nbsp;</div></div>-->
-<!--                    <div class='left compName'><p>Colorant Name 234SDF</p></div>-->
-<!--                    <div class='left compAmount'><p>0.34 ml</p></div>-->
-<!--                    <div class='left compPrice'><p>€12.45</p></div>-->
+                <div class='row'>
+                    <div class='left compColor'><div class='colorantColor'>&nbsp;</div></div>
+                    <div class='left compName'><p>Colorant Name 234SDF</p></div>
+                    <div class='left compAmount'><p>0.34 ml</p></div>
+                    <div class='left compPrice'><p>€12.45</p></div>
                 </div>
                 <div class='row'>
                     <div class='left compColor'><div class='colorantColor'>&nbsp;</div></div>
@@ -169,34 +170,7 @@ $collectionsList = showCollectionOptions("all");
             <div class="colorSwatchName"><?php echo $lang["COLORNAME"]; ?></div>
         </div>
         <div class="colorSwatch left">
-            <div class="colorSwatchName"><?php echo $lang["COLORNAME"]; ?></div>
-        </div>
-        <div class="colorSwatch left">
-            <div class="colorSwatchName"><?php echo $lang["COLORNAME"]; ?></div>
-        </div>
-        <div class="colorSwatch left">
-            <div class="colorSwatchName"><?php echo $lang["COLORNAME"]; ?></div>
-        </div>
-        <div class="colorSwatch left">
-            <div class="colorSwatchName"><?php echo $lang["COLORNAME"]; ?></div>
-        </div>
-        <div class="colorSwatch left">
-            <div class="colorSwatchName"><?php echo $lang["COLORNAME"]; ?></div>
-        </div>
-        <div class="colorSwatch left">
-            <div class="colorSwatchName"><?php echo $lang["COLORNAME"]; ?></div>
-        </div>
-        <div class="colorSwatch left">
-            <div class="colorSwatchName"><?php echo $lang["COLORNAME"]; ?></div>
-        </div>
-        <div class="colorSwatch left selectedColorSwatch">
-            <div class="colorSwatchName"><?php echo $lang["COLORNAME"]; ?></div>
-        </div>
-        <div class="colorSwatch left">
-            <div class="colorSwatchName"><?php echo $lang["COLORNAME"]; ?></div>
-        </div>
-        <div class="colorSwatch left">
-            <div class="colorSwatchName"><?php echo $lang["COLORNAME"]; ?></div>
+            <div class="colorSwatchName"><?php echo $lang["ergvfd"]; ?></div>
         </div>
         <div class="colorSwatch left">
             <div class="colorSwatchName"><?php echo $lang["COLORNAME"]; ?></div>
@@ -293,7 +267,6 @@ $collectionsList = showCollectionOptions("all");
     </div>
     <div class="closeBtn button" id="closeRunTintingMachinePopup">OK</div>
 </div>
-
 
 <div class="setSettings">
     <p><?php echo $lang["SETTINGS"]; ?><img id="closeSettingsWithArrow" src="images/arrow-left.png"></p>

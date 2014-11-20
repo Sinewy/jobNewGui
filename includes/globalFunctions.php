@@ -220,6 +220,37 @@ function findCollectionsForColor($colorName) {
     return $result;
 }
 
+function findDataForSelectedColor($formulaId) {
+    global $connection;
+    $query  = "SELECT p.name as productName, b.name as baseName, b.ID as baseId, coll.name as collectionName, ";
+    $query  .= "c.name_short as colorName, c.R as colorR, c.G as colorG, c.B as colorB, f.sustrate, f.WARNING_MESSAGE, f.COMMENTS ";
+    $query  .= "FROM formulas f ";
+    $query  .= "INNER JOIN products p ON (p.id = f.products_id) ";
+    $query  .= "INNER JOIN collections coll ON (coll.id = f.collections_id) ";
+    $query  .= "INNER JOIN colors c ON (c.id = f.colors_id) ";
+    $query  .= "INNER JOIN bases b ON (b.ID = f.bases_id) ";
+    $query  .= "WHERE f.formulas_id = {$formulaId} ";
+    $query .= "LIMIT 1";
+    $result = mysqli_query($connection, $query);
+    confirmQuery($result);
+    if($data = mysqli_fetch_assoc($result)) {
+        return $data;
+    } else {
+        return null;
+    }
+}
+
+function findColorantsForSelectedColor($formulaId) {
+    global $connection;
+    $query = "SELECT c.name as name, c.R as colorantR, c.G as colorantG, c.B as colorantB ";
+    $query .= "FROM formulas_has_colorants f ";
+    $query .= "INNER JOIN colorants c ON (c.id = f.colorants_id) ";
+    $query .= "WHERE f.formulas_id = {$formulaId} ";
+    $result = mysqli_query($connection, $query);
+    confirmQuery($result);
+    return $result;
+
+}
 
 // ********************** View functions **********************\\
 
